@@ -1,0 +1,10 @@
+.DS_Store
+*.asv
+*.autosave
+data/*.wav
+data/*.WAV
+results/runs/
+results/experiments/
+tmp/
+results/test_report.mat
+__pycache__/

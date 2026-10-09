@@ -1,0 +1,11 @@
+Synthetic test only: 1
+MATLAB: 26.1.0.3312084 (R2026a) Update 4
+Nominal RT60: 0.2000 s
+Measured broadband T20: 0.1888 s
+Input SNR: -5.000000 dB
+Shared listening scale: 0.066692847
+Steering: direct_path
+MVDR constraint error: 1.19e-14
+Metrics use original amplitudes and reverberant reference.
+Noise estimation uses an explicit target-absent calibration segment.
+This single run does not establish speech enhancement performance.

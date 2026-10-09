@@ -1,0 +1,30 @@
+function cfg = default_config()
+% Shared settings for every method. Tune on development speech only.
+cfg.fs = 16000;
+cfg.seed = 5305;
+cfg.duration = 4;
+cfg.calibrationSeconds = 1;  % target absent, interference present
+cfg.targetFile = '';        % empty: synthetic test signal, NOT a speech corpus
+cfg.interfererFile = '';
+cfg.noiseType = 'stationary'; % stationary or competing_speech
+cfg.inputSNR = -5;           % target / (interferer + background), reference mic
+cfg.room = [5 4 3];
+cfg.microphones = [2 + (-1.5:1.5)'*0.04, 2*ones(4,1), 1.5*ones(4,1)];
+cfg.targetPosition = [2 3 1.5];
+cfg.interfererPosition = [3.5 2.5 1.5];
+cfg.referenceMic = 2;
+cfg.soundSpeed = 343;
+cfg.rt60 = 0.2;              % nominal Sabine target; achieved T20 also logged
+cfg.imageOrder = [];        % automatic order from nominal RT60 and mean free path
+cfg.backgroundPowerRatio = 0.01;
+cfg.windowLength = 1024;
+cfg.hop = 256;
+cfg.nfft = 1024;
+cfg.loading = 1e-3;         % trace-relative diagonal loading
+cfg.psdAlpha = 0.8;         % time smoothing shared before frequency grouping
+cfg.gainFloor = 0.05;
+cfg.numBands = 24;          % same band count, triangle shape & mapping rule
+cfg.steering = 'direct_path'; % or known_rtf (privileged diagnostic only)
+cfg.enableSTOI = true;
+cfg.outputDir = '';         % run_demo creates a new run directory
+end
