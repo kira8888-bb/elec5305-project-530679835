@@ -1,5 +1,7 @@
 # ELEC5305 Project Proposal
 
+> **Version note:** This file preserves the original project proposal for submission history. The current feedback-two revision, updated methodology, executable MATLAB implementation, and validation scope are documented in [Peinan_Gu_Feedback_Two.md](Peinan_Gu_Feedback_Two.md) and the repository [README](../README.md).
+
 ## Hybrid Multichannel Speech Enhancement Using MVDR Beamforming and Adaptive Cochlear-Domain Wiener Filtering
 
 **Student:** Peinan Gu  

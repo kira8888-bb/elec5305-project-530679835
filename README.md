@@ -13,6 +13,7 @@ processing was already investigated by Gui and Kwan (2005) and Li et al. (2008).
 The intended contribution is a controlled comparison and an explanation of
 estimate stability versus spectral-detail loss, not a new cochlear model.
 
+[Original proposal (preserved)](proposal/PROJECT_PROPOSAL.md) |
 [Revised proposal (editable)](proposal/Peinan_Gu_Feedback_Two.md) |
 [Revised proposal (PDF)](output/pdf/Peinan_Gu_Feedback_Two.pdf) |
 [Feedback changes / 中文修改说明](FEEDBACK_CHANGES_CN.md)
