@@ -139,6 +139,21 @@ is retained. Metrics are:
 Reference-error SNR includes residual noise AND target distortion. It is not a
 component-separated output noise-power SNR. `score_signals.m` makes this explicit.
 
+For MVDR and its three Wiener variants, the simulation also measures two
+components of the output error. It freezes the weights and time-frequency gains
+learned from the mixture, applies them to the simulated target stem, and subtracts
+that target output from the processed mixture to obtain the residual interference
+and background noise. The isolated stems are used only for evaluation.
+
+| Diagnostic | Definition | Preferred direction |
+|---|---|---|
+| `InterferenceAttenuation_dB` | `10*log10(input noise energy / residual noise energy)`, with input measured at the reference microphone | Higher |
+| `TargetDistortion_dB` | `10*log10(target error energy / reference target energy)`, with target error measured after the frozen filter | Lower |
+
+Both use the same scoring interval and floor normalized error or residual power
+at `1e-12`. The two component energies need not sum to mixture error energy
+because the target error and residual interference can be correlated.
+
 ## Experiments and variance analysis
 
 Supply a list of different target/interferer recordings:
@@ -156,6 +171,21 @@ map. Start with one pair as a pilot, then expand the corpus and speaker coverage
 For competing speech, seeds vary background noise only; multiple competing
 utterances are needed to vary that source. Seeds are not independent speakers.
 
+`paired_utterances.csv` reports ERB minus each control (uniform and bin-wise)
+on the same mixture, averaged over seeds within each utterance and condition.
+`paired_summary.csv` reports the mean paired difference, usable utterance count
+and pointwise 95% percentile bootstrap interval from 2,000 resamples of utterance
+pairs. Groups with fewer than two usable utterances have blank intervals. For
+inference across speakers, use independent speaker pairs or treat the intervals
+as descriptive for this set of recordings. Small samples give unstable intervals.
+
+Use the ERB-minus-uniform SI-SDR contrast as the main report result and the
+ERB-minus-bin-wise contrast to assess the value of smoothing. Interpret the
+SI-SDR differences alongside the component metrics. Positive differences in
+attenuation mean more noise was removed, while positive differences in target
+distortion mean more target error. The same room, recordings, mixture and frozen
+MVDR output are used for all three post-filters.
+
 ```matlab
 cfg = default_config();
 [diagnostics,folder] = run_variance_probe(cfg);
@@ -165,9 +195,8 @@ This stationary-noise probe fixes the target and room and measures gain variance
 across five noise realizations at the same time-frequency points. It does not
 mislabel temporal gain fluctuations as statistical variance. Lower variance
 alone is not better enhancement: compare speech distortion, SI-SDR and spectra.
-Paired utterance-level aggregation/confidence intervals and formal real-speech
-conclusions remain follow-up work. Angular separation is optional after the main
-comparison. Synthetic signals must not be used as evidence for the research claim.
+Use the variance probe as a mechanism check. Synthetic signals are reserved for
+implementation validation. The real-speech benchmark still needs to be run.
 
 ## Repository layout
 
