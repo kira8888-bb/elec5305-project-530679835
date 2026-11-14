@@ -3,6 +3,8 @@
 *.autosave
 data/*.wav
 data/*.WAV
+data/*.m4a
+data/*.M4A
 results/runs/
 results/experiments/
 tmp/

@@ -18,8 +18,8 @@ M=size(cfg.microphones,1);
 L=nTotal+max(size(room.target,1),size(room.interferer,1))-1;
 target=zeros(L,M); directional=zeros(L,M);
 for m=1:M
-    a=conv(s,room.target(:,m)); target(1:numel(a),m)=a;
-    b=conv(i,room.interferer(:,m)); directional(1:numel(b),m)=b;
+    a=convolve_source(s,room.target(:,m)); target(1:numel(a),m)=a;
+    b=convolve_source(i,room.interferer(:,m)); directional(1:numel(b),m)=b;
 end
 ref=cfg.referenceMic;
 % Same fixed evaluation interval for all outputs; includes target RIR tail.
@@ -33,4 +33,9 @@ scene.mixture=target+noise; scene.target=target; scene.noise=noise;
 scene.reference=target(:,ref); scene.evalIdx=evalIdx; scene.room=room;
 scene.synthetic=synthetic || syntheticInterferer;
 scene.inputSNR=10*log10(sum(target(evalIdx,ref).^2)/sum(noise(evalIdx,ref).^2));
+end
+
+function y=convolve_source(source,rir)
+% Preserve the entire RIR tail while avoiding long direct convolutions.
+y=fftfilt(rir,[source; zeros(numel(rir)-1,1)]);
 end

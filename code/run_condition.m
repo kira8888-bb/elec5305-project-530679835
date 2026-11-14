@@ -1,4 +1,4 @@
-function r=run_condition(cfg,room)
+function r=run_condition(cfg,room,diagnoseComponents)
 if nargin<2, room=make_room(cfg); end
 scene=simulate_scene(cfg,room); [X,meta]=tf_analysis(scene.mixture,cfg);
 % Exclude initial propagation transient and any frame overlapping the target.
@@ -21,4 +21,7 @@ for k=1:numel(names), outputs.(names{k})=tf_synthesis(spec.(names{k}),meta,cfg);
 r.scores=score_signals(outputs,scene,cfg);
 r.outputs=outputs; r.scene=scene; r.gains=gains; r.cfg=cfg; r.meta=meta;
 r.mvdrConstraintError=bf.constraintError;
+if nargin>=3 && diagnoseComponents
+    r.components=diagnose_components(scene,bf,gains,outputs,meta,cfg);
+end
 end

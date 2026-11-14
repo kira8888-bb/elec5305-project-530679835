@@ -1,0 +1,13 @@
+Noise,NominalRT60,Method,GroupCount,mean_AcrossSeedGainVariance
+competing_speech,0.2,mvdr_binwise,36,0.0234380849062846
+competing_speech,0.2,mvdr_erb,36,0.000411502567679175
+competing_speech,0.2,mvdr_uniform,36,0.000753221639019974
+competing_speech,0.6,mvdr_binwise,36,0.0207222134437781
+competing_speech,0.6,mvdr_erb,36,0.0003319815539661
+competing_speech,0.6,mvdr_uniform,36,0.000609284151625312
+stationary,0.2,mvdr_binwise,36,0.0309258856866828
+stationary,0.2,mvdr_erb,36,0.00129445992526896
+stationary,0.2,mvdr_uniform,36,0.00218896819892299
+stationary,0.6,mvdr_binwise,36,0.0420005674964811
+stationary,0.6,mvdr_erb,36,0.00270120798085168
+stationary,0.6,mvdr_uniform,36,0.0049845512785249

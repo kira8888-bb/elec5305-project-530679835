@@ -32,14 +32,9 @@ outputs from that run. All WAV files use one common scale. The run's STOI values
 are deliberately blank/NaN because the harmonic fixture is not speech.
 The metric values must not be presented as evidence for an ERB advantage.
 
-## Not yet established
+## Real-recording experiment
 
-- A completed licensed real-speech corpus benchmark across the full grid.
-- Paired utterance-level confidence intervals or speaker generalization.
-- Perceptual preference or human intelligibility improvements.
-- Equivalence to an installed established MVDR toolbox implementation.
-- A published, accessible GitHub Pages deployment.
-
-See the root README and FEEDBACK_CHANGES_CN.md for the model assumptions and
-remaining research work. Do not replace these limitations with success claims
-when uploading the initial repository.
+The [original pair](recording_study/) and the [four-recording comparison](recording_replication/)
+report the subsequent speech experiments. MATLAB R2026a Update 4 passed
+`setup_project; run_tests` after the follow-up. Component checks verified
+that the filtered target and interference reconstruct the mixture output.

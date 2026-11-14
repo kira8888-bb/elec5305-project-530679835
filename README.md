@@ -13,12 +13,49 @@ processing was already investigated by Gui and Kwan (2005) and Li et al. (2008).
 The intended contribution is a controlled comparison and an explanation of
 estimate stability versus spectral-detail loss, not a new cochlear model.
 
-[Original proposal (preserved)](proposal/PROJECT_PROPOSAL.md) |
+[Original proposal](proposal/PROJECT_PROPOSAL.md) |
 [Revised proposal (editable)](proposal/Peinan_Gu_Feedback_Two.md) |
 [Revised proposal (PDF)](output/pdf/Peinan_Gu_Feedback_Two.pdf) |
 [Feedback changes / 中文修改说明](FEEDBACK_CHANGES_CN.md)
 
 ## Status and requirements
+
+The [four-recording comparison](results/recording_replication/) evaluates the
+three frequency groupings on two female-voice recordings (1 and 2) and two
+male-voice recordings (3 and 4). The original study and follow-up each use one
+pair of recordings. The pair comparison describes repeatability across these
+recordings. Voice group and recording pair coincide in this design.
+
+To reproduce this case study with access to the two original recordings, run
+from the repository root. The input order assigns the recording IDs in the
+tables. MATLAB R2026a Update 4, Signal Processing Toolbox and Audio Toolbox
+were used for this run. On a system without M4A decoding, convert the complete
+recordings to PCM WAV at their original sample rate before running it.
+
+```matlab
+setup_project;
+study = run_recording_study({"data/recordings/Recording1.m4a", "data/recordings/Recording2.m4a"});
+summarize_recording_study(study, fullfile(pwd, "results", "recording_study"));
+```
+
+The [follow-up study](results/recording_replication/) applies the same protocol
+to two additional recordings. Run it as a second pair to match the original
+design, including the same excerpt start times and both target roles.
+
+```matlab
+followup = run_recording_study({"data/recordings/Recording 3.m4a", "data/recordings/Recording4.m4a"}, [3 4]);
+originalDir = fullfile(pwd, "results", "recording_study");
+followupDir = fullfile(pwd, "results", "recording_replication");
+summarize_recording_study(followup, followupDir);
+compare_recording_studies(originalDir, followupDir);
+```
+
+`study` contains per-mixture scores, input checks, room checks and a listening
+example. The published summaries include seed-averaged scores and paired
+comparisons. Both [original](results/recording_study/listening_example/)
+and [follow-up](results/recording_replication/listening_example/) listening
+examples use a common gain across each reference, mixture and set of outputs.
+[Source recordings and labels](data/)
 
 Initial executable MATLAB prototype, tested using **MATLAB R2026a Update 4**.
 Requires **Signal Processing Toolbox and Audio Toolbox**. Room responses use
@@ -31,8 +68,7 @@ That comparison is explicitly skipped when the toolbox is unavailable.
 No toolbox code or course files are redistributed here.
 
 The default demo generates synthetic harmonic test signals. They are not real
-speech, and its scores do not establish speech enhancement or intelligibility.
-There is no final real-speech benchmark in this package.
+speech, and its scores only document the original engineering validation.
 
 [Validation record](results/VALIDATION.md) and
 [synthetic example outputs](results/synthetic_demo/) document what has actually
@@ -165,9 +201,9 @@ This stationary-noise probe fixes the target and room and measures gain variance
 across five noise realizations at the same time-frequency points. It does not
 mislabel temporal gain fluctuations as statistical variance. Lower variance
 alone is not better enhancement: compare speech distortion, SI-SDR and spectra.
-Paired utterance-level aggregation/confidence intervals and formal real-speech
-conclusions remain follow-up work. Angular separation is optional after the main
-comparison. Synthetic signals must not be used as evidence for the research claim.
+The two-recording runner above performs paired excerpt-level aggregation with
+descriptive results. Estimates of speaker-level uncertainty need independent
+recordings from more speakers.
 
 ## Repository layout
 
@@ -177,6 +213,9 @@ code/                         simulation, STFT, MVDR, grouping, metrics, plots
 test/run_tests.m              reconstruction, covariance and end-to-end checks
 run_demo.m                    one reproducible example
 run_experiments.m             controlled real-speech pilot grid
+run_recording_study.m         fixed, paired two-recording experiment
+summarize_recording_study.m   paired score tables and figures
+compare_recording_studies.m   compare the original and follow-up recording pairs
 run_variance_probe.m          repeated-noise diagnostic
 proposal/                     editable revised proposal
 output/pdf/                   revised proposal PDF
@@ -196,10 +235,9 @@ The four main working sections are:
 
 ## GitHub and Pages
 
-Upload these files into the root of `elec5305-project-530679835`, preserving the
-existing original proposal as history. The prepared Pages entry is `docs/index.md`.
-See [docs/GITHUB_UPLOAD_CN.md](docs/GITHUB_UPLOAD_CN.md) for exact upload/publishing
-steps. Having this file locally does not mean the remote site has been deployed.
+The [project website](https://kira8888-bb.github.io/elec5305-project-530679835/)
+is built from `docs/index.md`. See [publishing instructions](docs/GITHUB_UPLOAD_CN.md)
+for the repository and Pages settings.
 
 ## Literature and implementation sources
 
