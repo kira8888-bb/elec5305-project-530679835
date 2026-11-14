@@ -35,6 +35,9 @@ for rt=[0.2 0.6]
         end
     end
 end
+[paired,summary]=summarize_paired_scores(allScores);
+writetable(paired,fullfile(out,'paired_utterances.csv'));
+writetable(summary,fullfile(out,'paired_summary.csv'));
 fprintf('Saved paired observations to %s\n',out);
-fprintf('Aggregate by utterance before confidence intervals; seeds are not new speakers.\n');
+fprintf('Paired summaries average seeds within each utterance and condition.\n');
 end

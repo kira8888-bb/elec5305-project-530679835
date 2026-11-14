@@ -19,6 +19,7 @@ end
 names=fieldnames(spec);
 for k=1:numel(names), outputs.(names{k})=tf_synthesis(spec.(names{k}),meta,cfg); end
 r.scores=score_signals(outputs,scene,cfg);
+r.scores=score_mvdr_components(r.scores,outputs,scene,bf.weights,gains,meta,cfg);
 r.outputs=outputs; r.scene=scene; r.gains=gains; r.cfg=cfg; r.meta=meta;
 r.mvdrConstraintError=bf.constraintError;
 end
