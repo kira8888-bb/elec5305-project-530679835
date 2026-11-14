@@ -1,11 +1,14 @@
-# Results status
+# Results
 
-See the [two-recording case study](recording_study/) for the measured results,
-figures, and the scope of the conclusions. The [follow-up study](recording_replication/)
-repeats the same design with two more recordings and compares both pairs.
-The original synthetic demo is an implementation check.
-`run_demo` and `run_variance_probe` create separate directories under `runs/`.
-`run_experiments` creates a new directory under `experiments/`.
-Raw run folders are ignored by Git to avoid accidentally uploading unlicensed audio.
-Keep configuration, MATLAB version, achieved T20, seed and data provenance with any
-curated result you later publish. Never present synthetic-test scores as speech results.
+Each recording pair contributes 432 simulated mixtures. The condition-level
+comparison averages the two pairs equally after averaging seeds within each
+target excerpt.
+
+| Study | Analysis | Data | Audio |
+|---|---|---|---|
+| Recordings 1 and 2 · female voice | [Original experiment](recording_study/) | [All scores](recording_study/all_scores.csv) | [Listening examples](recording_study/listening_example/) |
+| Recordings 3 and 4 · male voice | [Follow-up experiment](recording_replication/) | [All scores](recording_replication/all_scores.csv) | [Listening examples](recording_replication/listening_example/) |
+| Both pairs | [Four-recording comparison](recording_replication/#comparison) | [Condition comparison](recording_replication/comparison_with_original.csv) | [Website listening section](https://kira8888-bb.github.io/elec5305-project-530679835/#listening-examples) |
+
+[Reproduction instructions](../README.md#reproduce-the-four-recording-study) ·
+[Engineering validation](VALIDATION.md)

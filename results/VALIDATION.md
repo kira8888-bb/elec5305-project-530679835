@@ -27,10 +27,8 @@ RT60 = 0.2 s and input SNR = -5 dB. The measured broadband decay estimate was
 0.1888 s. Seven output signals, a target reference, a metric table and a
 spectrogram figure were generated successfully.
 
-The [synthetic_demo](synthetic_demo/) folder includes the small reproducible
-outputs from that run. All WAV files use one common scale. The run's STOI values
-are deliberately blank/NaN because the harmonic fixture is not speech.
-The metric values must not be presented as evidence for an ERB advantage.
+Run `run_demo` to regenerate these outputs locally. Synthetic inputs produce
+`NaN` STOI scores.
 
 ## Real-recording experiment
 

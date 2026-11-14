@@ -1,256 +1,108 @@
-# ELEC5305: MVDR and Wiener Post-Filter Frequency Smoothing
+# ELEC5305 — MVDR and Wiener Post-Filter Frequency Smoothing
 
-Peinan Gu | SID 530679835 | The University of Sydney
+Peinan Gu · The University of Sydney
 
-## Research question
+This project compares bin-wise, uniform-band and ERB-band Wiener post-filters
+after the same MVDR beamformer. It tests how input SNR, reverberation and
+interference affect the balance between noise suppression and speech preservation.
 
-Does ERB-band smoothing improve Wiener post-filtering after MVDR beyond
-bin-wise processing or ordinary uniform-frequency grouping, and under which
-SNR and reverberation conditions?
+[Project website](https://kira8888-bb.github.io/elec5305-project-530679835/) ·
+[Results](results/) · [Source recordings](data/) · [References](docs/references.md)
 
-This project studies an established architecture. Auditory/subband Wiener
-processing was already investigated by Gui and Kwan (2005) and Li et al. (2008).
-The intended contribution is a controlled comparison and an explanation of
-estimate stability versus spectral-detail loss, not a new cochlear model.
+## Findings
 
-[Original proposal](proposal/PROJECT_PROPOSAL.md) |
-[Revised proposal (editable)](proposal/Peinan_Gu_Feedback_Two.md) |
-[Revised proposal (PDF)](output/pdf/Peinan_Gu_Feedback_Two.pdf) |
-[Feedback changes / 中文修改说明](FEEDBACK_CHANGES_CN.md)
+The study uses four real speech recordings as sources for a simulated
+four-microphone array. Recordings 1 and 2 form the female-voice pair, and
+Recordings 3 and 4 form the male-voice pair. Six windows per recording, 12
+acoustic conditions and three seeds per target window yield 864 mixtures.
+Voice group and recording pair coincide in this design.
 
-## Status and requirements
+In stationary noise, ERB improved mean SI-SDR over uniform grouping by
+0.71–1.75 dB across the six conditions, averaging both recording pairs. In
+competing speech, the difference depended more on the recording pair. At
+−5 dB in the higher-reverberation room, ERB suppressed more interference
+than bin-wise Wiener and increased target error on both pairs.
 
-The [four-recording comparison](results/recording_replication/) evaluates the
-three frequency groupings on two female-voice recordings (1 and 2) and two
-male-voice recordings (3 and 4). The original study and follow-up each use one
-pair of recordings. The pair comparison describes repeatability across these
-recordings. Voice group and recording pair coincide in this design.
+[Four-recording comparison and sensitivity analysis](results/recording_replication/) ·
+[Condition-level comparison CSV](results/recording_replication/comparison_with_original.csv)
 
-To reproduce this case study with access to the two original recordings, run
-from the repository root. The input order assigns the recording IDs in the
-tables. MATLAB R2026a Update 4, Signal Processing Toolbox and Audio Toolbox
-were used for this run. On a system without M4A decoding, convert the complete
-recordings to PCM WAV at their original sample rate before running it.
+## Run the demo
 
-```matlab
-setup_project;
-study = run_recording_study({"data/recordings/Recording1.m4a", "data/recordings/Recording2.m4a"});
-summarize_recording_study(study, fullfile(pwd, "results", "recording_study"));
-```
+Use MATLAB R2026a Update 4 with Signal Processing Toolbox and Audio Toolbox.
+The room simulator requires `acousticRoomResponse`. On releases where it
+requires the Room Acoustics Simulation feature, install that feature.
+The optional MVDR toolbox comparison uses Phased Array System Toolbox.
 
-The [follow-up study](results/recording_replication/) applies the same protocol
-to two additional recordings. Run it as a second pair to match the original
-design, including the same excerpt start times and both target roles.
+From the repository root, run the tests and demo:
 
 ```matlab
-followup = run_recording_study({"data/recordings/Recording 3.m4a", "data/recordings/Recording4.m4a"}, [3 4]);
-originalDir = fullfile(pwd, "results", "recording_study");
-followupDir = fullfile(pwd, "results", "recording_replication");
-summarize_recording_study(followup, followupDir);
-compare_recording_studies(originalDir, followupDir);
+setup_project
+run_tests
+run_demo
 ```
 
-`study` contains per-mixture scores, input checks, room checks and a listening
-example. The published summaries include seed-averaged scores and paired
-comparisons. Both [original](results/recording_study/listening_example/)
-and [follow-up](results/recording_replication/listening_example/) listening
-examples use a common gain across each reference, mixture and set of outputs.
-[Source recordings and labels](data/)
+The default demo is a synthetic engineering check. It writes audio, metrics
+and spectrograms to a new folder under `results/runs/`.
+[Validation record](results/VALIDATION.md)
 
-Initial executable MATLAB prototype, tested using **MATLAB R2026a Update 4**.
-Requires **Signal Processing Toolbox and Audio Toolbox**. Room responses use
-the established `acousticRoomResponse` image-source simulator (introduced in
-R2025a). For R2026b, MathWorks documents the optional Room Acoustics Simulation
-feature; follow its installation instructions if this function is unavailable.
+## Reproduce the four-recording study
 
-Phased Array System Toolbox is optional for comparison with `mvdrweights`.
-That comparison is explicitly skipped when the toolbox is unavailable.
-No toolbox code or course files are redistributed here.
-
-The default demo generates synthetic harmonic test signals. They are not real
-speech, and its scores only document the original engineering validation.
-
-[Validation record](results/VALIDATION.md) and
-[synthetic example outputs](results/synthetic_demo/) document what has actually
-been checked. Do not use this engineering fixture as a speech-quality result.
-
-## Quick start
-
-Open MATLAB, set the current folder to this repository, then run:
+Run these commands from the repository root. MATLAB must support M4A decoding.
+If the system cannot decode M4A, convert the original recordings to PCM WAV
+at 48 kHz and update the paths. The runner uses MATLAB STOI.
 
 ```matlab
-setup_project;
-run_tests;
-r = run_demo;
+setup_project
+firstPair = run_recording_study({"data/recordings/Recording1.m4a", ...
+    "data/recordings/Recording2.m4a"});
+secondPair = run_recording_study({"data/recordings/Recording 3.m4a", ...
+    "data/recordings/Recording4.m4a"}, [3 4]);
+
+firstSummary = fullfile(firstPair, "summary");
+secondSummary = fullfile(secondPair, "summary");
+summarize_recording_study(firstPair, firstSummary);
+summarize_recording_study(secondPair, secondSummary);
+compare_recording_studies(firstSummary, secondSummary);
 ```
 
-Each demo writes a new folder under `results/runs/` containing seven output WAVs,
-the reverberant target WAV, `metrics.csv`, `spectrograms.png`, `run.mat` and
-`RUN_INFO.txt`. Metrics use unscaled signals. All listening WAVs use one common
-gain to avoid clipping; they are not individually peak-normalized.
+The runner writes scores and listening examples to a new experiment folder under
+`results/experiments/`. Each example uses a common playback gain across its WAVs.
 
-For real speech, place your permitted WAV files in `data/`:
+## Methods
 
-```matlab
-setup_project;
-cfg = default_config();
-cfg.targetFile = fullfile(pwd,'data','target.wav');
-cfg.interfererFile = fullfile(pwd,'data','interferer.wav');
-cfg.noiseType = 'competing_speech';
-r = run_demo(cfg);
-```
+The seven outputs are the noisy reference microphone, single-channel Wiener,
+delay-and-sum, MVDR, and MVDR followed by bin-wise, uniform-band or ERB-band
+Wiener filtering. The three MVDR post-filters share the same beamformer output
+and the same speech and noise power estimates.
 
-The default target needs at least 4 seconds; the competing source needs at least
-5 seconds including the target-absent calibration interval. Both are downmixed
-and resampled to 16 kHz. A short file raises an error rather than silently looping.
-Record sources and permissions as described in [data/README.md](data/README.md).
+The array uses four microphones spaced 4 cm apart in a 5 × 4 × 3 m shoebox room.
+The simulator tests stationary directional noise and competing speech at
+−5, 0 and +5 dB input SNR and nominal RT60 values of 0.2 and 0.6 s.
+The published runs use image-source orders 24 and 36 with measured
+broadband T20 extrapolations of 0.1888 and 0.5662 s.
 
-## Systems
+MVDR uses direct-path steering and estimates noise covariance from complete
+STFT frames between 0.3 and 1 s while the target is absent. Beamformer weights
+and the resulting noise PSD are fixed over each clip. The Wiener estimator
+smooths mixture power with `alpha = 0.8` and subtracts the noise PSD, flooring
+the speech estimate at zero. The two grouped variants average PSDs with
+24 triangular bands, then linearly interpolate the Wiener gains back to the
+STFT bins. The gain floor is 0.05 for all variants.
 
-| Method | Purpose |
-|---|---|
-| `noisy` | Reference-microphone baseline |
-| `single_wiener` | Single-channel bin-wise Wiener |
-| `das` | Phase-steered delay-and-sum baseline |
-| `mvdr` | Loaded MVDR without a post-filter |
-| `mvdr_binwise` | MVDR + independent frequency-bin Wiener |
-| `mvdr_uniform` | MVDR + uniformly spaced triangular-band Wiener |
-| `mvdr_erb` | MVDR + ERB-spaced triangular-band Wiener |
-
-The last three share exactly the same MVDR output and the same precomputed
-speech/noise power estimates. Only the frequency-aggregation matrix changes.
-
-## Shared estimation and fair comparison
-
-1. The target is absent for the first second. Noise/interference is present.
-   Covariance estimation uses complete frames between 0.3 s and 1 s, avoiding
-   the initial propagation transient and frames overlapping target onset.
-2. The resulting noise covariance and MVDR weights remain fixed for the clip.
-   The estimated beamformer-output noise PSD is `real(w' * Rn * w)`; it excludes
-   diagonal loading, which is numerical regularization rather than actual noise.
-3. The mixture power is time-smoothed with `alpha = 0.8`; speech power is
-   `max(smoothedMixturePower - noisePSD, 0)`. No decision-directed estimate is used.
-4. The identical speech/noise arrays are averaged separately by the chosen
-   frequency matrix. Compute `xi = speechPower/noisePower`, then `xi/(1+xi)`.
-5. Gains are linearly mapped back to bins with partition-of-unity weights and
-   clipped to the common range `[0.05, 1]`. No variant-specific temporal filtering
-   or parameter tuning is applied.
-
-Uniform and ERB variants use 24 centres from DC to Nyquist, triangular weights
-linear in Hz and the same normalized interpolation. ERB centres are equally
-spaced on `21.4*log10(1+0.00437*f)`. This is **ERB-inspired smoothing**, not a
-gammatone filterbank or a full cochlear model. Equal counts do not guarantee equal
-local bandwidth; evaluate 16/24/32-band sensitivity on separate development data.
-
-The calibration assumption is deliberately explicit. A fixed calibration PSD
-may track stationary noise poorly if conditions change and may be inaccurate for
-competing speech. An adaptive noise estimator/VAD is a later shared extension,
-not a feature claimed by this prototype.
-
-## Acoustic and evaluation conventions
-
-The room is 5 x 4 x 3 m. Four microphones have 4 cm spacing. Target, interferer
-and array positions are fixed in `config/default_config.m`. Nominal RT60 is
-converted to uniform absorption using Sabine's relation; image order is derived
-from RT60 and mean free path. Actual broadband Schroeder T20 (extrapolated to
-60 dB) is recorded. Nominal RT60 is not presented as a measured result.
-
-Default MVDR steering uses direct-path distances and amplitudes relative to the
-reference microphone. This can mismatch the reverberant transfer function.
-`cfg.steering='known_rtf'` uses full simulated RIRs as a **privileged diagnostic**;
-keep its results separate. Neither setting claims explicit dereverberation.
-
-All signals preserve common sample timing. The metric target is the **desired
-reverberant target component at reference microphone 2**, not the anechoic source.
-The initial calibration interval is excluded from evaluation; the target tail
-is retained. Metrics are:
-
-- `ReferenceErrorSNR_dB = 10*log10(sum(ref.^2)/sum((ref-output).^2))`.
-- `DeltaReferenceErrorSNR_dB`: difference from the noisy reference-mic score.
-- Zero-mean SI-SDR using the projection of the output onto the reference.
-- MATLAB STOI for real speech if available; synthetic tests deliberately store
-  `NaN`. STOI with a reverberant reference measures relative preservation and
-  is not a claim of absolute human intelligibility.
-
-Reference-error SNR includes residual noise AND target distortion. It is not a
-component-separated output noise-power SNR. `score_signals.m` makes this explicit.
-
-## Experiments and variance analysis
-
-Supply a list of different target/interferer recordings:
-
-```matlab
-[scores,folder] = run_experiments( ...
-    {fullfile(pwd,'data','target.wav')}, ...
-    {fullfile(pwd,'data','interferer.wav')});
-```
-
-The runner uses 2 interference types x 3 SNRs (-5/0/5 dB) x 2 nominal RT60s
-(0.2/0.6 s), with 3 noise seeds per utterance: 36 runs per pair. It requires real
-audio and saves every paired observation, configuration, achieved T20 and gain
-map. Start with one pair as a pilot, then expand the corpus and speaker coverage.
-For competing speech, seeds vary background noise only; multiple competing
-utterances are needed to vary that source. Seeds are not independent speakers.
-
-```matlab
-cfg = default_config();
-[diagnostics,folder] = run_variance_probe(cfg);
-```
-
-This stationary-noise probe fixes the target and room and measures gain variance
-across five noise realizations at the same time-frequency points. It does not
-mislabel temporal gain fluctuations as statistical variance. Lower variance
-alone is not better enhancement: compare speech distortion, SI-SDR and spectra.
-The two-recording runner above performs paired excerpt-level aggregation with
-descriptive results. Estimates of speaker-level uncertainty need independent
-recordings from more speakers.
+The evaluation uses the isolated reverberant target at reference microphone 2.
+The calibration interval is excluded and the reverberation tail is included.
+The results report reference-error SNR improvement, SI-SDR and STOI. The
+component analysis applies the mixture-derived weights and gains to the
+simulated target and interference to measure their contributions to output
+error. The study averages the three seeds within each excerpt before
+comparing methods. [Analysis and experimental design](results/recording_replication/)
 
 ## Repository layout
 
-```text
-config/default_config.m       shared scene and estimator settings
-code/                         simulation, STFT, MVDR, grouping, metrics, plots
-test/run_tests.m              reconstruction, covariance and end-to-end checks
-run_demo.m                    one reproducible example
-run_experiments.m             controlled real-speech pilot grid
-run_recording_study.m         fixed, paired two-recording experiment
-summarize_recording_study.m   paired score tables and figures
-compare_recording_studies.m   compare the original and follow-up recording pairs
-run_variance_probe.m          repeated-noise diagnostic
-proposal/                     editable revised proposal
-output/pdf/                   revised proposal PDF
-docs/                         GitHub Pages entry and publishing notes
-results/                      validation record and generated run folders
-data/                         audio provenance instructions
-```
-
-The four main working sections are:
-
-| Section | Contents |
+| Path | Contents |
 |---|---|
-| [`data/`](data/) | Permitted target/interferer WAV files and provenance records |
-| [`test/`](test/) | Reconstruction, gain, MVDR and end-to-end validation |
-| [`results/`](results/) | Validation record, generated metrics, figures and listening examples |
-| [`code/`](code/) | Core simulation and enhancement functions |
-
-## GitHub and Pages
-
-The [project website](https://kira8888-bb.github.io/elec5305-project-530679835/)
-is built from `docs/index.md`. See [publishing instructions](docs/GITHUB_UPLOAD_CN.md)
-for the repository and Pages settings.
-
-## Literature and implementation sources
-
-The [proposal references](proposal/Peinan_Gu_Feedback_Two.md#7-references)
-contain ten relevant papers, including the two specifically identified in the
-feedback. Established MATLAB APIs used or targeted for validation:
-
-- [Room impulse response](https://www.mathworks.com/help/audio/ref/acousticroomresponse.html)
-- [STFT](https://www.mathworks.com/help/signal/ref/stft.html) and
-  [inverse STFT](https://www.mathworks.com/help/signal/ref/istft.html)
-- [Standard MVDR solution/example](https://www.mathworks.com/help/phased/ug/rectangular-array-mvdr-beamformer.html)
-- [Optional MVDR weight cross-check](https://www.mathworks.com/help/phased/ref/mvdrweights.html)
-- [STOI](https://www.mathworks.com/help/audio/ref/stoi.html)
-
-Classical MVDR and Wiener filtering are interpretable baselines. Neural mask and
-covariance estimation are discussed in the proposal, not implemented or trained.
+| [`code/`](code/) and [`config/`](config/) | Simulation, beamforming, post-filters and default settings |
+| [`data/`](data/) | Original recordings and voice labels |
+| [`test/`](test/) | STFT reconstruction, MVDR and integration tests |
+| [`results/`](results/) | Published analysis, CSVs, figures and audio examples |
+| [`docs/`](docs/) | GitHub Pages source and references |
