@@ -16,6 +16,14 @@ comparison of frequency grouping and its stability/distortion trade-off.
 
 [GitHub repository](https://github.com/kira8888-bb/elec5305-project-530679835) · [Reproduce the experiment](https://github.com/kira8888-bb/elec5305-project-530679835#reproduce-the-four-recording-study) · [Source recordings](https://github.com/kira8888-bb/elec5305-project-530679835/tree/main/data)
 
+## Demo video
+
+<video controls playsinline preload="metadata" style="display: block; width: 100%; max-width: 960px;" aria-label="ELEC5305 final project demonstration">
+  <source src="{{ '/elec5305-demo.mp4' | relative_url }}" type="video/mp4">
+</video>
+
+[Open the video directly]({{ '/elec5305-demo.mp4' | relative_url }})
+
 ## Methods
 
 Four microphones, fixed source/array geometry and established room simulation.

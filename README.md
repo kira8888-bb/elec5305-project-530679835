@@ -7,6 +7,7 @@ after the same MVDR beamformer. It tests how input SNR, reverberation and
 interference affect the balance between noise suppression and speech preservation.
 
 [Project website](https://kira8888-bb.github.io/elec5305-project-530679835/) ·
+[Watch the final demo](https://kira8888-bb.github.io/elec5305-project-530679835/#demo-video) ·
 [Results](results/) · [Source recordings](data/) · [References](docs/references.md)
 
 ## Findings
